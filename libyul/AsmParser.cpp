@@ -571,10 +571,7 @@ std::variant<Literal, Identifier, BuiltinName> Parser::parseLiteralOrIdentifier(
 		if (std::optional<BuiltinHandle> const builtinHandle = m_dialect.findBuiltin(currentLiteral()))
 			literalOrIdentifier = BuiltinName{createDebugData(), *builtinHandle};
 		else
-		{
-			std::ignore = _labelRegistryBuilder.define(currentLiteral());
-			literalOrIdentifier = Identifier{createDebugData(), YulName{currentLiteral()}};
-		}
+			literalOrIdentifier = Identifier{createDebugData(), _labelRegistryBuilder.define(currentLiteral())};
 		advance();
 		return literalOrIdentifier;
 	}
@@ -786,8 +783,7 @@ YulName Parser::expectAsmIdentifier(ASTLabelRegistryBuilder& _labelRegistryBuild
 			currentLocation(),
 			fmt::format("Cannot use builtin function name \"{}\" as identifier name.", identifier)
 		);
-	YulName const name{identifier};
-	std::ignore = _labelRegistryBuilder.define(identifier);
+	auto const name = _labelRegistryBuilder.define(identifier);
 	// NOTE: We keep the expectation here to ensure the correct source location for the error above.
 	expectToken(Token::Identifier);
 	return name;

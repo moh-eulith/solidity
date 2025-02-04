@@ -70,10 +70,13 @@ LabelIDDispenser::LabelID LabelIDDispenser::resolveBaseID(LabelID _id) const
 	return _id;
 }
 
-ASTLabelRegistry LabelIDDispenser::generateNewLabels(Block const&, Dialect const& _dialect) const
+ASTLabelRegistry LabelIDDispenser::generateNewLabels(Block const& _root, Dialect const& _dialect) const
 {
-	// this can be replaced by the actually used ids in the provided block once the AST uses ids instead of YulString
-	std::set<LabelID> usedIDs = ranges::views::iota(static_cast<size_t>(0), m_idToLabelMapping.size() + m_offset) | ranges::to<std::set<LabelID>>;
+	std::set<LabelID> usedIDs = NameCollector(_root).names();
+	// add ghosts to usedIDs as they're not referenced in the regular ast
+	for (size_t i = 0; i < m_idToLabelMapping.size(); ++i)
+		if (m_idToLabelMapping[i] == ASTLabelRegistry::ghostID())
+			usedIDs.insert(i + m_offset);
 
 	if (usedIDs.empty())
 		return {};

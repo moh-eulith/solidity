@@ -70,7 +70,7 @@ std::vector<StackLayoutGenerator::StackTooDeep> StackLayoutGenerator::reportStac
 {
 	StackLayout stackLayout{{}, {}};
 	CFG::FunctionInfo const* functionInfo = nullptr;
-	if (!_functionName.empty())
+	if (!ASTLabelRegistry::empty(_functionName))
 	{
 		functionInfo = &ranges::find(
 			_cfg.functionInfo,
