@@ -248,14 +248,8 @@ bool BMC::visit(IfStatement const& _node)
 	m_context.pushSolver();
 	_node.condition().accept(*this);
 
-	// We ignore called functions here because they have
-	// specific input values.
-	if (isRootFunction() && !isInsideLoop())
-		addVerificationTarget(
-			VerificationTargetType::ConstantCondition,
-			expr(_node.condition()),
-			&_node.condition()
-		);
+	checkIfConditionIsConstant(_node.condition());
+
 	m_context.popSolver();
 	resetVariableIndices(std::move(indicesBeforePush));
 
@@ -284,13 +278,7 @@ bool BMC::visit(Conditional const& _op)
 	auto indicesBeforePush = copyVariableIndices();
 	m_context.pushSolver();
 	_op.condition().accept(*this);
-
-	if (isRootFunction() && !isInsideLoop())
-		addVerificationTarget(
-			VerificationTargetType::ConstantCondition,
-			expr(_op.condition()),
-			&_op.condition()
-		);
+	checkIfConditionIsConstant(_op.condition());
 	m_context.popSolver();
 	resetVariableIndices(std::move(indicesBeforePush));
 
@@ -691,12 +679,7 @@ void BMC::visitRequire(FunctionCall const& _funCall)
 	auto const& args = _funCall.arguments();
 	solAssert(args.size() >= 1, "");
 	solAssert(args.front()->annotation().type->category() == Type::Category::Bool, "");
-	if (isRootFunction() && !isInsideLoop())
-		addVerificationTarget(
-			VerificationTargetType::ConstantCondition,
-			expr(*args.front()),
-			args.front().get()
-		);
+	checkIfConditionIsConstant(*args.front());
 }
 
 void BMC::visitAddMulMod(FunctionCall const& _funCall)
@@ -934,9 +917,6 @@ void BMC::checkVerificationTarget(BMCVerificationTarget& _target)
 
 	switch (_target.type)
 	{
-		case VerificationTargetType::ConstantCondition:
-			checkConstantCondition(_target);
-			break;
 		case VerificationTargetType::Underflow:
 			checkUnderflow(_target);
 			break;
@@ -952,18 +932,35 @@ void BMC::checkVerificationTarget(BMCVerificationTarget& _target)
 		case VerificationTargetType::Assert:
 			checkAssert(_target);
 			break;
+		case VerificationTargetType::ConstantCondition:
+			solAssert(false, "Checks for constant condition are handled separately");
 		default:
 			solAssert(false, "");
 	}
 }
 
-void BMC::checkConstantCondition(BMCVerificationTarget& _target)
+void BMC::checkIfConditionIsConstant(Expression const& _condition)
 {
+	// We ignore called functions here because they have specific input values.
+	// Also, expressions inside loop can have different values in different iterations.
+	if (!isRootFunction() || isInsideLoop())
+		return;
+
+	if (
+		!m_settings.targets.has(VerificationTargetType::ConstantCondition) ||
+		(m_currentContract && !shouldAnalyze(*m_currentContract))
+	)
+		return;
+
+	// Do not check for const-ness if this is a constant.
+	if (dynamic_cast<Literal const*>(&_condition))
+		return;
+
 	checkBooleanNotConstant(
-		*_target.expression,
-		_target.constraints,
-		_target.value,
-		_target.callStack
+		_condition,
+		currentPathConditions() && m_context.assertions(),
+		expr(_condition),
+		m_callStack
 	);
 }
 
@@ -1069,6 +1066,7 @@ void BMC::addVerificationTarget(
 	Expression const* _expression
 )
 {
+	smtAssert(_type != VerificationTargetType::ConstantCondition, "Checks for constant condition are handled separately");
 	if (!m_settings.targets.has(_type) || (m_currentContract && !shouldAnalyze(*m_currentContract)))
 		return;
 
@@ -1082,10 +1080,7 @@ void BMC::addVerificationTarget(
 		m_callStack,
 		modelExpressions()
 	};
-	if (_type == VerificationTargetType::ConstantCondition)
-		checkVerificationTarget(target);
-	else
-		m_verificationTargets.emplace_back(std::move(target));
+	m_verificationTargets.emplace_back(std::move(target));
 }
 
 /// Solving.
@@ -1196,10 +1191,6 @@ void BMC::checkBooleanNotConstant(
 	std::vector<SMTEncoder::CallStackEntry> const& _callStack
 )
 {
-	// Do not check for const-ness if this is a constant.
-	if (dynamic_cast<Literal const*>(&_condition))
-		return;
-
 	m_interface->push();
 	m_interface->addAssertion(_constraints && _value);
 	auto positiveResult = checkSatisfiable();

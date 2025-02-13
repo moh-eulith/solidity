@@ -161,7 +161,6 @@ private:
 
 	void checkVerificationTargets();
 	void checkVerificationTarget(BMCVerificationTarget& _target);
-	void checkConstantCondition(BMCVerificationTarget& _target);
 	void checkUnderflow(BMCVerificationTarget& _target);
 	void checkOverflow(BMCVerificationTarget& _target);
 	void checkDivByZero(BMCVerificationTarget& _target);
@@ -173,6 +172,8 @@ private:
 		Expression const* _expression
 	);
 	//@}
+
+	void checkIfConditionIsConstant(Expression const& _condition);
 
 	/// Solver related.
 	//@{
