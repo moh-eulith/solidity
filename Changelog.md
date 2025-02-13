@@ -13,6 +13,7 @@ Compiler Features:
 
 Bugfixes:
  * General: Fix internal compiler error when requesting IR AST outputs for interfaces and abstract contracts.
+ * Metadata: Fix custom cleanup sequence missing from metadata when other optimizer settings have default values
  * SMTChecker: Fix reporting on targets that are safe in the context of one contract but unsafe in the context of another contract.
  * SMTChecker: Fix SMT logic error when analyzing cross-contract getter call with BMC.
  * SMTChecker: Fix SMT logic error when contract deployment involves string literal to fixed bytes conversion.
