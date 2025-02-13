@@ -171,9 +171,12 @@ private:
 		smtutil::Expression const& _value,
 		Expression const* _expression
 	);
+	/// Special handling of ConstantCondition verification target.
+	/// The target is checked immediately, unlike the other targets that are queued for checking at the end of analysis.
+	void checkIfConditionIsConstant(Expression const& _condition);
 	//@}
 
-	void checkIfConditionIsConstant(Expression const& _condition);
+
 
 	/// Solver related.
 	//@{
@@ -223,20 +226,23 @@ private:
 	/// Number of verification conditions that could not be proved.
 	size_t m_unprovedAmt = 0;
 
+	/// Loop analysis
+	//@{
 	enum class LoopControlKind
 	{
 		Continue,
 		Break
 	};
 
-	// Current path conditions and SSA indices for break or continue statement
+	/// Current path conditions and SSA indices for break or continue statement
 	struct LoopControl {
 		LoopControlKind kind;
 		smtutil::Expression pathConditions;
 		VariableIndices variableIndices;
 	};
 
-	// Loop control statements for every loop
+	/// Loop control statements for every loop
 	std::stack<std::vector<LoopControl>> m_loopCheckpoints;
+	//@}
 };
 }
