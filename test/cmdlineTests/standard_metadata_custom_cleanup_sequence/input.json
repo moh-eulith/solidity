@@ -1,0 +1,23 @@
+{
+	"language": "Solidity",
+	"sources": {
+		"C": {"urls": ["standard_metadata/in.sol"]}
+	},
+	"settings": {
+		"outputSelection": {
+			"*": {"*": ["metadata"]}
+		},
+		"viaIR": true,
+		"optimizer": {
+			"enabled": true,
+			"details": {
+				"yul": true,
+				"yulDetails": {
+					// default optimization sequence with a custom (truncated) cleanup sequence.
+					// 0.8.18 - 0.8.28 this would spuriously be interpreted as defaulted optimizer settings in metadata.
+					"optimizerSteps": "dhfoDgvulfnTUtnIf[xa[r]EscLMcCTUtTOntnfDIulLculVcul [j]Tpeulxa[rul]xa[r]cLgvifCTUca[r]LSsTFOtfDnca[r]Iulc]jmul[jul] VcTOcul jmul:D"
+				}
+			}
+		}
+	}
+}
