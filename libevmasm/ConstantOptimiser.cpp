@@ -253,7 +253,23 @@ AssemblyItems ComputeMethod::findRepresentation(u256 const& _value)
 	if (_value < 0x10000)
 		// Very small value, not worth computing
 		return AssemblyItems{_value};
-	else if (numberEncodingSize(~_value) < numberEncodingSize(_value))
+
+	// check for masks first
+	unsigned lowZeros = 0;
+	unsigned highOnes = 0;
+	for (; ((_value >> lowZeros) & 1) == 0 && lowZeros < 256; lowZeros++) {}
+	for (; ((_value >> (lowZeros + highOnes)) & 1) == 1 && highOnes < 256; highOnes++) {}
+	if (highOnes > 32 && ((_value >> (lowZeros + highOnes)) == 0))
+	{
+		// this is a big enough mask to use zero negation
+		AssemblyItems newRoutine = AssemblyItems{u256(0), Instruction::NOT};
+		if ((highOnes + lowZeros) != 256)
+			newRoutine += AssemblyItems{u256(256 - highOnes), Instruction::SHR};
+		if (lowZeros > 0)
+			newRoutine += AssemblyItems{u256(lowZeros), Instruction::SHL};
+		return newRoutine;
+	}
+	if (numberEncodingSize(~_value) < numberEncodingSize(_value))
 		// Negated is shorter to represent
 		return findRepresentation(~_value) + AssemblyItems{Instruction::NOT};
 	else

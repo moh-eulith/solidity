@@ -4,7 +4,7 @@ Language Features:
 
 
 Compiler Features:
-
+* Optimized constant generation for masks. With low compiler runs (optimized for size), reduces the byte code length and gas.
 
 Bugfixes:
 
