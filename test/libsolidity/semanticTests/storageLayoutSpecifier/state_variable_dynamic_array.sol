@@ -41,7 +41,7 @@ contract C is A layout at 42 {
 // arrayALength() -> 3
 // arrayCLength() -> 0
 // initCFromAInReverse() -> 3, 2, 1
-// gas irOptimized: 121276
+// gas irOptimized: 121131
 // gas legacy: 121213
 // gas legacyOptimized: 120843
 // clearA() ->

@@ -19,11 +19,11 @@ contract Main {
 // bytecodeFormat: legacy,>=EOFv1
 // ----
 // constructor(): "abc", true
-// gas irOptimized: 80174
-// gas irOptimized code: 24200
+// gas irOptimized: 80112
+// gas irOptimized code: 29000
 // gas legacy: 85098
 // gas legacy code: 58200
-// gas legacyOptimized: 80132
-// gas legacyOptimized code: 22800
+// gas legacyOptimized: 80108
+// gas legacyOptimized code: 27600
 // getFlag() -> true
 // getName() -> "abc"

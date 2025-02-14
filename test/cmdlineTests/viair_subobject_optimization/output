@@ -18,7 +18,7 @@ EVM assembly:
   dup4
   add
   swap2
-  sub(shl(0x40, 0x01), 0x01)
+  shr(0xc0, not(0x00))
   dup4
   gt
   dup5
@@ -43,7 +43,8 @@ EVM assembly:
   tag_7
   jumpi
   mload
-  sub(shl(0x48, 0x01), 0xbe)
+    /* "viair_subobject_optimization/input.sol":625:645  0xFFFFFFFFFFFFFFFF42 */
+  0xffffffffffffffff42
     /* "viair_subobject_optimization/input.sol":620:645  x == 0xFFFFFFFFFFFFFFFF42 */
   eq
     /* "viair_subobject_optimization/input.sol":616:661  if (x == 0xFFFFFFFFFFFFFFFF42)... */
@@ -223,7 +224,7 @@ sub_0: assembly {
           dup4
           add
           swap2
-          sub(shl(0x40, 0x01), 0x01)
+          shr(0xc0, not(0x00))
           dup4
           gt
           dup5
@@ -248,7 +249,8 @@ sub_0: assembly {
           tag_7
           jumpi
           mload
-          sub(shl(0x48, 0x01), 0xbe)
+            /* "viair_subobject_optimization/input.sol":625:645  0xFFFFFFFFFFFFFFFF42 */
+          0xffffffffffffffff42
             /* "viair_subobject_optimization/input.sol":620:645  x == 0xFFFFFFFFFFFFFFFF42 */
           eq
             /* "viair_subobject_optimization/input.sol":616:661  if (x == 0xFFFFFFFFFFFFFFFF42)... */

@@ -88,7 +88,7 @@ protected:
 	) const
 	{
 		// _runGas is not multiplied by _multiplicity because the runs are "per opcode"
-		return m_params.runs * _runGas + m_params.multiplicity * _repeatedDataGas + _uniqueDataGas;
+		return m_params.runs * _runGas * 3 + m_params.multiplicity * _repeatedDataGas + _uniqueDataGas;
 	}
 
 	/// Replaces all constants i by the code given in @a _replacement[i].

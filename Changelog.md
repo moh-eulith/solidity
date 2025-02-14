@@ -4,7 +4,7 @@ Language Features:
 
 
 Compiler Features:
-
+* Constant Optimizer: Compute masks using shifts when optimizing for size; reduces byte code length and runtime gas.
 
 Bugfixes:
 
