@@ -67,41 +67,41 @@ object "A" {
 // optimizationPreset: full
 // ----
 // Assembly:
-//   sstore(calldataload(sub(shl(0xff, 0x01), shl(0x7f, 0x01))), calldataload(0x01))
+//   sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //   stop
 // stop
 //
 // sub_0: assembly {
-//       sstore(calldataload(shl(0x7f, 0xffffffffffffffffffffffffffffffff)), calldataload(0x01))
+//       sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //       stop
 //     stop
 //
 //     sub_0: assembly {
-//           sstore(calldataload(sub(shl(0xff, 0x01), shl(0x7f, 0x01))), calldataload(0x01))
+//           sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //           stop
 //         stop
 //
 //         sub_0: assembly {
-//               sstore(calldataload(shl(0x7f, 0xffffffffffffffffffffffffffffffff)), calldataload(0x01))
+//               sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //               stop
 //         }
 //
 //         sub_1: assembly {
-//               sstore(calldataload(sub(shl(0xff, 0x01), shl(0x7f, 0x01))), calldataload(0x01))
+//               sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //               stop
 //         }
 //     }
 // }
 //
 // sub_1: assembly {
-//       sstore(calldataload(shl(0x7f, 0xffffffffffffffffffffffffffffffff)), calldataload(0x01))
+//       sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //       stop
 // }
 //
 // sub_2: assembly {
-//       sstore(calldataload(sub(shl(0xff, 0x01), shl(0x7f, 0x01))), calldataload(0x01))
+//       sstore(calldataload(shl(0x7f, shr(0x80, not(0x00)))), calldataload(0x01))
 //       stop
 // }
-// Bytecode: 6001356001607f1b600160ff1b03355500fe
-// Opcodes: PUSH1 0x1 CALLDATALOAD PUSH1 0x1 PUSH1 0x7F SHL PUSH1 0x1 PUSH1 0xFF SHL SUB CALLDATALOAD SSTORE STOP INVALID
-// SourceMappings: :::-:0;;;;;;;;;;;
+// Bytecode: 6001355f1960801c607f1b355500fe
+// Opcodes: PUSH1 0x1 CALLDATALOAD PUSH0 NOT PUSH1 0x80 SHR PUSH1 0x7F SHL CALLDATALOAD SSTORE STOP INVALID
+// SourceMappings: :::-:0;;;;;;;;;;
