@@ -355,6 +355,45 @@ struct EqIsZeroJumpI: SimplePeepholeOptimizerMethod<EqIsZeroJumpI>
 	}
 };
 
+// PUSH DUP[x=2..10] SWAP1 -> DUP[x-1] PUSH 
+struct PushDupSwap: SimplePeepholeOptimizerMethod<PushDupSwap>
+{
+	static size_t applySimple(
+		AssemblyItem const& _push,
+		AssemblyItem const& _dup,
+		AssemblyItem const& _swap,
+		std::back_insert_iterator<AssemblyItems> _out
+	)
+	{
+		static std::map<Instruction, Instruction> const dupMinusOne{
+			{ Instruction::DUP2, Instruction::DUP1 },
+			{ Instruction::DUP3, Instruction::DUP2 },
+			{ Instruction::DUP4, Instruction::DUP3 },
+			{ Instruction::DUP5, Instruction::DUP4 },
+			{ Instruction::DUP6, Instruction::DUP5 },
+			{ Instruction::DUP7, Instruction::DUP6 },
+			{ Instruction::DUP8, Instruction::DUP7 },
+			{ Instruction::DUP9, Instruction::DUP8 },
+			{ Instruction::DUP10, Instruction::DUP9 }
+		};
+		auto t = _push.type();
+		if (
+			_swap == Instruction::SWAP1 &&
+			_dup.type() == Operation &&
+			dupMinusOne.count(_dup.instruction()) &&
+			(t == Push || t == PushTag || t == PushSub ||
+				t == PushSubSize || t == PushProgramSize || t == PushData || t == PushLibraryAddress)
+		)
+		{
+			*_out = AssemblyItem(dupMinusOne.at(_dup.instruction()), _dup.debugData());
+			*_out = _push;
+			return true;
+		}
+		else
+			return false;
+	}
+};
+
 // push_tag_1 jumpi push_tag_2 jump tag_1: -> iszero push_tag_2 jumpi tag_1:
 struct DoubleJump: SimplePeepholeOptimizerMethod<DoubleJump>
 {
@@ -618,9 +657,27 @@ bool PeepholeOptimiser::optimise()
 	while (state.i < m_items.size())
 		applyMethods(
 			state,
-			PushPop(), OpPop(), OpStop(), OpReturnRevert(), DoublePush(), DoubleSwap(), CommutativeSwap(), SwapComparison(),
-			DupSwap(), IsZeroIsZeroJumpI(), EqIsZeroJumpI(), DoubleJump(), JumpToNext(), UnreachableCode(), DeduplicateNextTagSize3(),
-			DeduplicateNextTagSize2(), DeduplicateNextTagSize1(), TagConjunctions(), TruthyAnd(), Identity()
+			PushPop(),
+			OpPop(),
+			OpStop(),
+			OpReturnRevert(),
+			DoublePush(),
+			DoubleSwap(),
+			CommutativeSwap(),
+			SwapComparison(),
+			DupSwap(),
+			PushDupSwap(),
+			IsZeroIsZeroJumpI(),
+			EqIsZeroJumpI(),
+			DoubleJump(),
+			JumpToNext(),
+			UnreachableCode(),
+			DeduplicateNextTagSize3(),
+			DeduplicateNextTagSize2(),
+			DeduplicateNextTagSize1(),
+			TagConjunctions(),
+			TruthyAnd(),
+			Identity()
 		);
 	if (m_optimisedItems.size() < m_items.size() || (
 		m_optimisedItems.size() == m_items.size() && (

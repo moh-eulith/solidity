@@ -1083,6 +1083,25 @@ BOOST_AUTO_TEST_CASE(deduplicateNextTagBlockSize1)
 	);
 }
 
+BOOST_AUTO_TEST_CASE(peephole_push_dup_swap)
+{
+	AssemblyItems items{
+		u256(17),
+		Instruction::DUP5,
+		Instruction::SWAP1,
+	};
+	AssemblyItems expectation{
+		Instruction::DUP4,
+		u256(17),
+	};
+	PeepholeOptimiser peepOpt(items, solidity::test::CommonOptions::get().evmVersion());
+	BOOST_REQUIRE(peepOpt.optimise());
+	BOOST_CHECK_EQUAL_COLLECTIONS(
+		items.begin(), items.end(),
+		expectation.begin(), expectation.end()
+	);
+}
+
 BOOST_AUTO_TEST_CASE(peephole_double_push)
 {
 	AssemblyItems items{
