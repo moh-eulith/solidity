@@ -402,6 +402,74 @@ struct EqIsZeroRJumpI: SimplePeepholeOptimizerMethod<EqIsZeroRJumpI>
 	}
 };
 
+// PUSH X SWAPN PUSH Y SWAP1 -> PUSH Y PUSH X SWAP(N+1)
+// dupX swapN push y dupY swap1 -> push y dup(X+1) swap(n+1)
+struct TwoPushSwap: SimplePeepholeOptimizerMethod<TwoPushSwap>
+{
+	static size_t applySimple(
+		AssemblyItem const& _pushx,
+		AssemblyItem const& _swapN,
+		AssemblyItem const& _pushy,
+		AssemblyItem const& _swap1,
+		std::back_insert_iterator<AssemblyItems> _out
+	)
+	{
+		static std::map<Instruction, Instruction> const swapPlusOne{
+			{ Instruction::SWAP1, Instruction::SWAP2 },
+			{ Instruction::SWAP2, Instruction::SWAP3 },
+			{ Instruction::SWAP3, Instruction::SWAP4 },
+			{ Instruction::SWAP4, Instruction::SWAP5 },
+			{ Instruction::SWAP5, Instruction::SWAP6 },
+			{ Instruction::SWAP6, Instruction::SWAP7 },
+			{ Instruction::SWAP7, Instruction::SWAP8 },
+			{ Instruction::SWAP8, Instruction::SWAP9 },
+			{ Instruction::SWAP9, Instruction::SWAP10 },
+			{ Instruction::SWAP10, Instruction::SWAP11 },
+			{ Instruction::SWAP11, Instruction::SWAP12 },
+		};
+		static std::map<Instruction, Instruction> const dupPlusOne{
+			{ Instruction::DUP1, Instruction::DUP2 },
+			{ Instruction::DUP2, Instruction::DUP3 },
+			{ Instruction::DUP3, Instruction::DUP4 },
+			{ Instruction::DUP4, Instruction::DUP5 },
+			{ Instruction::DUP5, Instruction::DUP6 },
+			{ Instruction::DUP6, Instruction::DUP7 },
+			{ Instruction::DUP7, Instruction::DUP8 },
+			{ Instruction::DUP8, Instruction::DUP9 },
+			{ Instruction::DUP9, Instruction::DUP10 },
+			{ Instruction::DUP10, Instruction::DUP11 },
+			{ Instruction::DUP11, Instruction::DUP12 },
+		};
+		auto tx = _pushx.type();
+		auto ty = _pushy.type();
+		if (
+			_swap1 == Instruction::SWAP1 &&
+			_swapN.type() == Operation &&
+			swapPlusOne.count(_swapN.instruction()) &&
+			(tx == Push || tx == PushTag || tx == PushSub ||
+				tx == PushSubSize || tx == PushProgramSize || tx == PushData || tx == PushLibraryAddress || 
+			    (_pushx.type() == Operation && dupPlusOne.count(_pushx.instruction()))) &&
+			(ty == Push || ty == PushTag || ty == PushSub ||
+				ty == PushSubSize || ty == PushProgramSize || ty == PushData || ty == PushLibraryAddress)
+		)
+		{
+			*_out = _pushy;
+			if (_pushx.type() == Operation && dupPlusOne.count(_pushx.instruction())) 
+			{
+				*_out = AssemblyItem(dupPlusOne.at(_pushx.instruction()), _pushx.debugData());
+			}
+			else
+			{
+				*_out = _pushx;
+			}
+			*_out = AssemblyItem(swapPlusOne.at(_swapN.instruction()), _swapN.debugData());
+			return true;
+		}
+		else
+			return false;
+	}
+};
+
 // push_tag_1 jumpi push_tag_2 jump tag_1: -> iszero push_tag_2 jumpi tag_1:
 struct DoubleJump: SimplePeepholeOptimizerMethod<DoubleJump>
 {
@@ -729,6 +797,7 @@ bool PeepholeOptimiser::optimise()
 			OpReturnRevert(),
 			DoublePush(),
 			DoubleSwap(),
+			TwoPushSwap(),
 			CommutativeSwap(),
 			SwapComparison(),
 			DupSwap(),

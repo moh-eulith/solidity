@@ -1136,6 +1136,69 @@ BOOST_AUTO_TEST_CASE(peephole_pop_calldatasize)
 	BOOST_CHECK(items.empty());
 }
 
+BOOST_AUTO_TEST_CASE(peephole_push_swapn_push_swap1)
+{
+	AssemblyItems items{
+		u256(43),
+		Instruction::SWAP6,
+		u256(122),
+		Instruction::SWAP1
+	};
+	AssemblyItems expectation{
+		u256(122),
+		u256(43),
+		Instruction::SWAP7
+	};
+	PeepholeOptimiser peepOpt(items, solidity::test::CommonOptions::get().evmVersion());
+	BOOST_REQUIRE(peepOpt.optimise());
+	BOOST_CHECK_EQUAL_COLLECTIONS(
+		items.begin(), items.end(),
+		expectation.begin(), expectation.end()
+	);
+}
+
+BOOST_AUTO_TEST_CASE(peephole_dup_swapn_dup_swap1)
+{
+	AssemblyItems items{
+		Instruction::DUP5,
+		Instruction::SWAP6,
+		Instruction::DUP3,
+		Instruction::SWAP1
+	};
+	AssemblyItems expectation{
+		Instruction::DUP2,
+		Instruction::DUP6,
+		Instruction::SWAP7
+	};
+	PeepholeOptimiser peepOpt(items, solidity::test::CommonOptions::get().evmVersion());
+	BOOST_REQUIRE(peepOpt.optimise());
+	BOOST_CHECK_EQUAL_COLLECTIONS(
+		items.begin(), items.end(),
+		expectation.begin(), expectation.end()
+	);
+}
+
+BOOST_AUTO_TEST_CASE(peephole_dup_swapn_push_swap1)
+{
+	AssemblyItems items{
+		Instruction::DUP5,
+		Instruction::SWAP6,
+		u256(122),
+		Instruction::SWAP1
+	};
+	AssemblyItems expectation{
+		u256(122),
+		Instruction::DUP6,
+		Instruction::SWAP7
+	};
+	PeepholeOptimiser peepOpt(items, solidity::test::CommonOptions::get().evmVersion());
+	BOOST_REQUIRE(peepOpt.optimise());
+	BOOST_CHECK_EQUAL_COLLECTIONS(
+		items.begin(), items.end(),
+		expectation.begin(), expectation.end()
+	);
+}
+
 BOOST_AUTO_TEST_CASE(peephole_commutative_swap1)
 {
 	std::vector<Instruction> ops{
