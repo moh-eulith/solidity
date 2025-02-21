@@ -1342,6 +1342,41 @@ BOOST_AUTO_TEST_CASE(peephole_truthy_and)
 	);
 }
 
+BOOST_AUTO_TEST_CASE(peephole_push_swap1_swapN_comop)
+{
+	std::vector<Instruction> ops{
+		Instruction::ADD,
+		Instruction::MUL,
+		Instruction::EQ,
+		Instruction::AND,
+		Instruction::OR,
+		Instruction::XOR
+	};
+	for (Instruction const op: ops)
+	{
+		AssemblyItems items{
+			u256(121),
+			Instruction::SWAP1,
+			Instruction::SWAP5,
+			op,
+			u256(4),
+			u256(5)
+		};
+		AssemblyItems expectation{
+			Instruction::SWAP4,
+			u256(121),
+			op,
+			u256(4),
+			u256(5)
+		};
+		PeepholeOptimiser peepOpt(items, solidity::test::CommonOptions::get().evmVersion());
+		BOOST_REQUIRE(peepOpt.optimise());
+		BOOST_CHECK_EQUAL_COLLECTIONS(
+			items.begin(), items.end(),
+			expectation.begin(), expectation.end()
+		);
+	}
+}
 
 BOOST_AUTO_TEST_CASE(peephole_iszero_iszero_jumpi)
 {
