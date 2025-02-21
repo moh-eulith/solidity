@@ -465,6 +465,53 @@ struct TruthyAnd: SimplePeepholeOptimizerMethod<TruthyAnd>
 	}
 };
 
+//push swap1 swapN ComOp -> swap[N-1] push ComOp
+struct PushTwoSwapComop: SimplePeepholeOptimizerMethod<PushTwoSwapComop>
+{
+	static bool applySimple(
+		AssemblyItem const& _push,
+		AssemblyItem const& _swap1,
+		AssemblyItem const& _swapN,
+		AssemblyItem const& _comop,
+		std::back_insert_iterator<AssemblyItems> _out
+	)
+	{
+		static std::map<Instruction, Instruction> const swapMinusOne{
+			{ Instruction::SWAP2, Instruction::SWAP1 },
+			{ Instruction::SWAP3, Instruction::SWAP2 },
+			{ Instruction::SWAP4, Instruction::SWAP3 },
+			{ Instruction::SWAP5, Instruction::SWAP4 },
+			{ Instruction::SWAP6, Instruction::SWAP5 },
+			{ Instruction::SWAP7, Instruction::SWAP6 },
+			{ Instruction::SWAP8, Instruction::SWAP7 },
+			{ Instruction::SWAP9, Instruction::SWAP8 },
+			{ Instruction::SWAP10, Instruction::SWAP9 },
+			{ Instruction::SWAP11, Instruction::SWAP10 },
+			{ Instruction::SWAP12, Instruction::SWAP11 },
+		};
+
+		auto t = _push.type();
+
+		if (SemanticInformation::isCommutativeOperation(_comop) && 
+			_swap1 == Instruction::SWAP1 &&
+			_swapN.type() == Operation &&
+			swapMinusOne.count(_swapN.instruction()) &&
+			(t == Push || t == PushTag || t == PushSub ||
+			t == PushSubSize || t == PushProgramSize || t == PushData || t == PushLibraryAddress)
+			)
+		{
+			*_out = AssemblyItem(swapMinusOne.at(_swapN.instruction()), _swapN.debugData());
+			*_out = _push;
+			*_out = _comop;
+			return true;
+		}
+		else
+			return false;
+	}
+};
+
+
+
 /// Removes everything after a JUMP (or similar) until the next JUMPDEST.
 struct UnreachableCode
 {
@@ -618,9 +665,27 @@ bool PeepholeOptimiser::optimise()
 	while (state.i < m_items.size())
 		applyMethods(
 			state,
-			PushPop(), OpPop(), OpStop(), OpReturnRevert(), DoublePush(), DoubleSwap(), CommutativeSwap(), SwapComparison(),
-			DupSwap(), IsZeroIsZeroJumpI(), EqIsZeroJumpI(), DoubleJump(), JumpToNext(), UnreachableCode(), DeduplicateNextTagSize3(),
-			DeduplicateNextTagSize2(), DeduplicateNextTagSize1(), TagConjunctions(), TruthyAnd(), Identity()
+			PushPop(),
+			OpPop(),
+			OpStop(),
+			OpReturnRevert(),
+			DoublePush(),
+			DoubleSwap(),
+			CommutativeSwap(),
+			SwapComparison(),
+			DupSwap(),
+			IsZeroIsZeroJumpI(),
+			EqIsZeroJumpI(),
+			DoubleJump(),
+			JumpToNext(),
+			UnreachableCode(),
+			PushTwoSwapComop(),
+			DeduplicateNextTagSize3(),
+			DeduplicateNextTagSize2(),
+			DeduplicateNextTagSize1(),
+			TagConjunctions(),
+			TruthyAnd(),
+			Identity()
 		);
 	if (m_optimisedItems.size() < m_items.size() || (
 		m_optimisedItems.size() == m_items.size() && (
