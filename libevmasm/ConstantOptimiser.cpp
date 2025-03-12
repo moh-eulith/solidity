@@ -259,7 +259,8 @@ AssemblyItems ComputeMethod::findRepresentation(u256 const& _value)
 	unsigned highOnes = 0;
 	for (; ((_value >> lowZeros) & 1) == 0 && lowZeros < 256; lowZeros++) {}
 	for (; ((_value >> (lowZeros + highOnes)) & 1) == 1 && highOnes < 256; highOnes++) {}
-	if (highOnes > 32 && ((_value >> (lowZeros + highOnes)) == 0))
+	if (highOnes > 32 && ((_value >> (lowZeros + highOnes)) == 0) &&
+		((lowZeros + highOnes < 256) || lowZeros > 16))
 	{
 		// this is a big enough mask to use zero negation
 		AssemblyItems newRoutine = AssemblyItems{u256(0), Instruction::NOT};
