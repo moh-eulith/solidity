@@ -31,6 +31,7 @@ unsigned ConstantOptimisationMethod::optimiseConstants(
 	bool _isCreation,
 	size_t _runs,
 	langutil::EVMVersion _evmVersion,
+	std::optional<uint8_t> _eofVersion,
 	Assembly& _assembly
 )
 {
@@ -55,6 +56,7 @@ unsigned ConstantOptimisationMethod::optimiseConstants(
 			params.isCreation = _isCreation;
 			params.runs = _runs;
 			params.evmVersion = _evmVersion;
+			params.eofVersion = _eofVersion;
 			LiteralMethod lit(params, item.data());
 			bigint literalGas = lit.gasNeeded();
 			CodeCopyMethod copy(params, item.data());
@@ -147,6 +149,9 @@ AssemblyItems LiteralMethod::execute(Assembly&) const
 
 bigint CodeCopyMethod::gasNeeded() const
 {
+	// EOF doesn't have CODECOPY.
+	if (m_params.eofVersion.has_value())
+		return boost::multiprecision::cpp_int(1) << 256; // the values below are effectively 64 bit, so this essentially infinity
 	return combineGas(
 		// Run gas: we ignore memory increase costs
 		simpleRunGas(copyRoutine(), m_params.evmVersion) + GasCosts::copyGas,

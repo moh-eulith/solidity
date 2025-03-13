@@ -940,12 +940,12 @@ std::map<u256, u256> const& Assembly::optimiseInternal(
 		}
 	}
 
-	// TODO: investigate for EOF
-	if (_settings.runConstantOptimiser && !m_eofVersion.has_value())
+	if (_settings.runConstantOptimiser)
 		ConstantOptimisationMethod::optimiseConstants(
 			isCreation(),
 			isCreation() ? 1 : _settings.expectedExecutionsPerDeployment,
 			m_evmVersion,
+			m_eofVersion,
 			*this
 		);
 
