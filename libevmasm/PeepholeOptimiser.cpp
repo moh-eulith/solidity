@@ -696,6 +696,58 @@ struct DeduplicateNextTagSize1 : SimplePeepholeOptimizerMethod<DeduplicateNextTa
 	}
 };
 
+// push swap2 swap1 swap2: -> swap1 push:
+// stack starts with [a, b, ...]
+// push x: [x, a, b, ...]
+// swap2: [b, a, x, ...]
+// swap1: [a, b, x, ...]
+// swap2: [x, b, a, ...]
+// instead:
+// swap1: [b, a, ...]
+// push x: [x, b, a, ...]
+// works for push swapX swap1 swapX
+// stack starts with [a, b, c, ...]
+// push x: [x, a, b, c, ...]
+// swap3: [c, a, b, x, ...]
+// swap1: [a, c, b, x, ...]
+// swap3: [x, c, b, a, ...]
+// instead: swap2 push
+// swap2 [c, b, a, ...]
+// push x: [x, c, b, a, ...]
+struct TripleSwap: SimplePeepholeOptimizerMethod<TripleSwap>
+{
+	static size_t applySimple(
+		AssemblyItem const& _push,
+		AssemblyItem const& _swapa,
+		AssemblyItem const& _swapb,
+		AssemblyItem const& _swapc,
+		std::back_insert_iterator<AssemblyItems> _out
+	)
+	{
+		static std::map<Instruction, Instruction> const swapMinusOne{
+			{ Instruction::SWAP2, Instruction::SWAP1 },
+			{ Instruction::SWAP3, Instruction::SWAP2 },
+			{ Instruction::SWAP4, Instruction::SWAP3 },
+			{ Instruction::SWAP5, Instruction::SWAP4 }
+		};
+
+		if (
+			_swapa == _swapc &&
+			_swapb == Instruction::SWAP1 &&
+			_swapa.type() == Operation &&
+			swapMinusOne.count(_swapa.instruction()) &&
+			(_push.type() == Push || _push.type() == PushTag)
+		)
+		{
+			*_out = AssemblyItem(swapMinusOne.at(_swapa.instruction()), _swapa.debugData());
+			*_out = _push;
+			return true;
+		}
+		else
+			return false;
+	}
+};
+
 template <typename... Method>
 void applyMethods(OptimiserState& _state)
 {
@@ -747,6 +799,7 @@ bool PeepholeOptimiser::optimise()
 			DeduplicateNextTagSize1,
 			TagConjunctions,
 			TruthyAnd,
+			TripleSwap,
 			Identity
 		>(state);
 	if (m_optimisedItems.size() < m_items.size() || (

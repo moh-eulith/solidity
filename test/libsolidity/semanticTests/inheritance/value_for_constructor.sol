@@ -39,12 +39,12 @@ contract Main {
 }
 // ----
 // constructor(), 22 wei ->
-// gas irOptimized: 143864
+// gas irOptimized: 143826
 // gas irOptimized code: 118000
 // gas legacy: 156599
 // gas legacy code: 236400
-// gas legacyOptimized: 143592
-// gas legacyOptimized code: 118000
+// gas legacyOptimized: 143583
+// gas legacyOptimized code: 118600
 // getFlag() -> true
 // getName() -> "abc"
 // getBalances() -> 12, 10

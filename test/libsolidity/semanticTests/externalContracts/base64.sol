@@ -37,8 +37,8 @@ contract test {
 // gas irOptimized code: 322000
 // gas legacy: 102214
 // gas legacy code: 629800
-// gas legacyOptimized: 87926
-// gas legacyOptimized code: 429800
+// gas legacyOptimized: 87894
+// gas legacyOptimized code: 429400
 // encode_inline_asm(bytes): 0x20, 0 -> 0x20, 0
 // encode_inline_asm(bytes): 0x20, 1, "f" -> 0x20, 4, "Zg=="
 // encode_inline_asm(bytes): 0x20, 2, "fo" -> 0x20, 4, "Zm8="
@@ -60,4 +60,4 @@ contract test {
 // encode_no_asm_large()
 // gas irOptimized: 3512081
 // gas legacy: 4600082
-// gas legacyOptimized: 2813075
+// gas legacyOptimized: 2807075

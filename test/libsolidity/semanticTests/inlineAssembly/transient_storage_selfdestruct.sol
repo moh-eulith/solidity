@@ -41,15 +41,15 @@ contract D {
 // bytecodeFormat: legacy
 // ----
 // constructor() ->
-// gas irOptimized: 127596
-// gas irOptimized code: 221000
+// gas irOptimized: 127486
+// gas irOptimized code: 220400
 // gas legacy: 149480
 // gas legacy code: 501200
-// gas legacyOptimized: 125846
-// gas legacyOptimized code: 203400
+// gas legacyOptimized: 125879
+// gas legacyOptimized code: 204200
 // destroy() ->
 // createAndDestroy() ->
 // gas legacy: 67048
 // gas legacy code: 92600
-// gas legacyOptimized: 65677
+// gas legacyOptimized: 65674
 // gas legacyOptimized code: 39400

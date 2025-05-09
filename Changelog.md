@@ -4,7 +4,7 @@ Language Features:
 
 
 Compiler Features:
-
+* Peephole Optimizer: Optimize the sequence PUSH SWAPX SWAP1 SWAPX
 
 Bugfixes:
 
