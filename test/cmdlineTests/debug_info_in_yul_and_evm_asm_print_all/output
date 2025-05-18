@@ -36,12 +36,12 @@ sub_0: assembly {
       dup1
       0x26121ff0
       eq
-      tag_3
+      tag_4
       jumpi
     tag_2:
       revert(0x00, 0x00)
         /* "input.sol":77:99  function f() public {} */
-    tag_3:
+    tag_4:
       stop
 
     auxdata: <AUXDATA REMOVED>

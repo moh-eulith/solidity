@@ -10,7 +10,7 @@ EVM assembly:
   not(sub(shl(0x40, 0x01), 0x01))
   and
     /* "input.sol":201:206  fun_x */
-  or(tag_0_7, shl(0x20, tag_2))
+  or(tag_0_7, shl(0x20, tag_8))
   sub(shl(0x40, 0x01), 0x01)
     /* "input.sol":179:210  function() r = true ? fun_x : f */
   and
@@ -27,8 +27,9 @@ EVM assembly:
 tag_5:
   pop
   jump(tag_6)
+    /* "input.sol":160:172  true ? 1 : 3 */
+tag_8:
     /* "input.sol":138:174  function f() public { true ? 1 : 3;} */
-tag_2:
   jump	// out
     /* "input.sol":60:213  contract C {... */
 tag_6:
@@ -57,22 +58,22 @@ sub_0: assembly {
       dup1
       0x26121ff0
       eq
-      tag_3
+      tag_6
       jumpi
       dup1
       0x2e1fb2bc
       eq
-      tag_3
+      tag_6
       jumpi
       dup1
       0x4753a67d
       eq
-      tag_3
+      tag_6
       jumpi
     tag_2:
       revert(0x00, 0x00)
         /* "input.sol":138:174  function f() public { true ? 1 : 3;} */
-    tag_3:
+    tag_6:
       stop
     tag_7:
       jump	// out

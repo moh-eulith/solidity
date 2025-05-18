@@ -89,7 +89,7 @@ contract Test {
 // test1() -> true
 // gas irOptimized: 152965
 // gas legacy: 153010
-// gas legacyOptimized: 152636
+// gas legacyOptimized: 152635
 // test2() -> true
 // test3() -> true
 // test4() -> true

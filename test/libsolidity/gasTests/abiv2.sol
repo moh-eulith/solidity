@@ -17,9 +17,9 @@ contract C {
 // bytecodeFormat: legacy
 // ----
 // creation:
-//   codeDepositCost: 1208000
-//   executionCost: 1252
-//   totalCost: 1209252
+//   codeDepositCost: 1185000
+//   executionCost: 1232
+//   totalCost: 1186232
 // external:
 //   a(): 2425
 //   b(uint256): infinite

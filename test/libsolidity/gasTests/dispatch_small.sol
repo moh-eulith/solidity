@@ -9,9 +9,9 @@ contract Small {
 // bytecodeFormat: legacy
 // ----
 // creation:
-//   codeDepositCost: 103800
-//   executionCost: 151
-//   totalCost: 103951
+//   codeDepositCost: 101800
+//   executionCost: 145
+//   totalCost: 101945
 // external:
 //   fallback: 128
 //   a(): 2402

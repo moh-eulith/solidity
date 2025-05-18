@@ -10,4 +10,4 @@ contract C {
 // f(bytes): 0x20, 0x80, 0x21, 0x40, 0x7, "abcdefg" -> 0x21, 0x40, 0x7, "abcdefg"
 // gas irOptimized: 135499
 // gas legacy: 137095
-// gas legacyOptimized: 135823
+// gas legacyOptimized: 135787

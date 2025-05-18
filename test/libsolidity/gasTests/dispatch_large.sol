@@ -27,9 +27,9 @@ contract Large {
 // bytecodeFormat: legacy
 // ----
 // creation:
-//   codeDepositCost: 618400
-//   executionCost: 649
-//   totalCost: 619049
+//   codeDepositCost: 597400
+//   executionCost: 630
+//   totalCost: 598030
 // external:
 //   a(): 2470
 //   b(uint256): infinite

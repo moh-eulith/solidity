@@ -14,9 +14,9 @@ contract Medium {
 // bytecodeFormat: legacy
 // ----
 // creation:
-//   codeDepositCost: 259600
-//   executionCost: 298
-//   totalCost: 259898
+//   codeDepositCost: 251600
+//   executionCost: 292
+//   totalCost: 251892
 // external:
 //   a(): 2447
 //   b(uint256): infinite

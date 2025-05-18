@@ -180,8 +180,8 @@ contract DepositContract is IDepositContract, ERC165 {
 // gas irOptimized code: 558000
 // gas legacy: 920228
 // gas legacy code: 1438800
-// gas legacyOptimized: 848699
-// gas legacyOptimized code: 878200
+// gas legacyOptimized: 848556
+// gas legacyOptimized code: 876200
 // supportsInterface(bytes4): 0x0 -> 0
 // supportsInterface(bytes4): 0xffffffff00000000000000000000000000000000000000000000000000000000 -> false # defined to be false by ERC-165 #
 // supportsInterface(bytes4): 0x01ffc9a700000000000000000000000000000000000000000000000000000000 -> true # ERC-165 id #
