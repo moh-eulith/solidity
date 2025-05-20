@@ -19,7 +19,7 @@ contract C {
 // gas irOptimized code: 42400
 // gas legacy: 88244
 // gas legacy code: 109400
-// gas legacyOptimized: 81858
-// gas legacyOptimized code: 55800
+// gas legacyOptimized: 81804
+// gas legacyOptimized code: 55600
 // f() -> 84, 23
 // m(uint256): 3 -> 7

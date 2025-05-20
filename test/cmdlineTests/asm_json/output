@@ -708,28 +708,9 @@ EVM assembly:
           "source": 1
         },
         {
-          "begin": 371,
-          "end": 378,
-          "name": "PUSH",
-          "source": 1,
-          "value": "0"
-        },
-        {
           "begin": 400,
           "end": 405,
-          "name": "DUP2",
-          "source": 1
-        },
-        {
-          "begin": 389,
-          "end": 405,
-          "name": "SWAP1",
-          "source": 1
-        },
-        {
-          "begin": 389,
-          "end": 405,
-          "name": "POP",
+          "name": "DUP1",
           "source": 1
         },
         {

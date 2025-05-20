@@ -16,7 +16,7 @@ contract D {
 }
 // ----
 // constructor(), 27 wei ->
-// gas irOptimized: 114057
+// gas irOptimized: 114038
 // gas irOptimized code: 53800
 // gas legacy: 117834
 // gas legacy code: 100600

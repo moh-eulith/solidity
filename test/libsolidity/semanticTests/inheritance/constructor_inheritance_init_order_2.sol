@@ -13,6 +13,6 @@ contract B is A {
 // gas irOptimized code: 20200
 // gas legacy: 100973
 // gas legacy code: 32600
-// gas legacyOptimized: 99137
+// gas legacyOptimized: 99118
 // gas legacyOptimized code: 16200
 // y() -> 42

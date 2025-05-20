@@ -17,11 +17,11 @@ contract C {
 // bytecodeFormat: legacy
 // ----
 // creation:
-//   codeDepositCost: 1208000
+//   codeDepositCost: 1204400
 //   executionCost: 1252
-//   totalCost: 1209252
+//   totalCost: 1205652
 // external:
-//   a(): 2425
+//   a(): 2418
 //   b(uint256): infinite
 //   f1(uint256): infinite
 //   f2(uint256[],string[],uint16,address): infinite

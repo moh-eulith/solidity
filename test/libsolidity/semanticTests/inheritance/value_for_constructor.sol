@@ -39,11 +39,11 @@ contract Main {
 }
 // ----
 // constructor(), 22 wei ->
-// gas irOptimized: 143864
+// gas irOptimized: 143845
 // gas irOptimized code: 118000
 // gas legacy: 156599
 // gas legacy code: 236400
-// gas legacyOptimized: 143592
+// gas legacyOptimized: 143573
 // gas legacyOptimized code: 118000
 // getFlag() -> true
 // getName() -> "abc"

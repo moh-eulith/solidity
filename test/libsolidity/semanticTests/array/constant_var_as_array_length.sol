@@ -12,7 +12,7 @@ contract C {
 // gas irOptimized code: 14800
 // gas legacy: 134317
 // gas legacy code: 46200
-// gas legacyOptimized: 127166
+// gas legacyOptimized: 127147
 // gas legacyOptimized code: 23400
 // a(uint256): 0 -> 1
 // a(uint256): 1 -> 2

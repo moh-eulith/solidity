@@ -28,7 +28,7 @@ contract c {
 // set() ->
 // gas irOptimized: 109684
 // gas legacy: 109727
-// gas legacyOptimized: 109680
+// gas legacyOptimized: 109677
 // x() -> 1, 2
 // y() -> 3, 4
 // swap() ->

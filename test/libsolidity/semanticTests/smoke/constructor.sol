@@ -16,7 +16,7 @@ contract C {
 // gas irOptimized code: 25400
 // gas legacy: 83055
 // gas legacy code: 65200
-// gas legacyOptimized: 78898
+// gas legacyOptimized: 78879
 // gas legacyOptimized code: 27800
 // state() -> 3
 // balance() -> 2

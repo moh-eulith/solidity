@@ -111,9 +111,8 @@ sub_0: assembly {
       jumpi
       0x01
       add
+      dup1
       0x00
-      dup2
-      swap1
       sstore
       mload(0x40)
       shl(0xe4, 0x026121ff)
@@ -457,9 +456,8 @@ sub_0: assembly {
       jumpi
       0x01
       add
+      dup1
       0x00
-      dup2
-      swap1
       sstore
       mload(0x40)
       shl(0xe4, 0x026121ff)

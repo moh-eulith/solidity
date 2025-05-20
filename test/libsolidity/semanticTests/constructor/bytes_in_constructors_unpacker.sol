@@ -14,7 +14,7 @@ contract Test {
 // gas irOptimized code: 78400
 // gas legacy: 195212
 // gas legacy code: 109400
-// gas legacyOptimized: 181608
+// gas legacyOptimized: 181551
 // gas legacyOptimized code: 71400
 // m_x() -> 7
 // m_s() -> 0x20, 78, "abcdefghijklmnopqrstuvwxyzabcdef", "ghijklmnopqrstuvwxyzabcdefghijkl", "mnopqrstuvwxyz"
