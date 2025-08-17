@@ -26,6 +26,7 @@
 #include <vector>
 #include <cstddef>
 #include <set>
+#include <map>
 
 namespace solidity::evmasm
 {
@@ -39,9 +40,14 @@ public:
 
 	bool optimise(std::set<size_t> const& _tagsReferencedFromOutside);
 
+	enum TrampolineState { Start, Impassible, PlaceTag, PushTagAfterTag };
 	/// @returns a set of all tags from the given sub-assembly that are referenced
 	/// from the given list of items.
 	static std::set<size_t> referencedTags(AssemblyItems const& _items, SubAssemblyID _subId);
+
+	/// @returns find this pattern: <impassible instruction> <tag A> <push tagB> <jump>
+	/// and return a map with from/to tags (e.g. A -> B)
+	static std::map<size_t, AssemblyItem> findTrampolines(AssemblyItems const& _items, SubAssemblyID _subId, std::set<size_t> const& _fromOutside);
 
 private:
 	AssemblyItems& m_items;
