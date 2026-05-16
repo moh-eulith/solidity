@@ -253,7 +253,41 @@ AssemblyItems ComputeMethod::findRepresentation(u256 const& _value)
 	if (_value < 0x10000)
 		// Very small value, not worth computing
 		return AssemblyItems{_value};
-	else if (numberEncodingSize(~_value) < numberEncodingSize(_value))
+
+	// check for masks first
+	//                                        high ones      low zeros
+	//                                       |----------||--------------|
+	// 0x000000000000000000000000000000000000ffffffffffff0000000000000000
+	unsigned lowZeros = 0;
+	unsigned highOnes = 0;
+	while (((_value >> lowZeros) & 1) == 0 && lowZeros < 256)
+		++lowZeros;
+	while (((_value >> (lowZeros + highOnes)) & 1) == 1 && highOnes < 256)
+		++highOnes;
+	if (
+		m_params.evmVersion.hasBitwiseShifting() &&
+		highOnes > 32 && // push would be more efficient otherwise
+		((_value >> (lowZeros + highOnes)) == 0) && // this is a pure mask
+		((lowZeros + highOnes < 256) || lowZeros > 16) // otherwise negation is more effective
+	)
+	{
+		// this is a big enough mask to use zero negation
+		AssemblyItems newRoutine = AssemblyItems{u256(0), Instruction::NOT};
+		if ((highOnes + lowZeros) != 256)
+			newRoutine += AssemblyItems{u256(256 - highOnes), Instruction::SHR};
+		if (lowZeros > 0)
+			newRoutine += AssemblyItems{u256(lowZeros), Instruction::SHL};
+		return newRoutine;
+	}
+	// pure negation can sometimes produce bad results
+	// example: 0xff00000000000000000000000000000000000000000000000000000000000000
+	// 0xff at the most significant byte of u256
+	// without the extra condition: not(sub(shl(0xf8, 0x01), 0x01))
+	// the extra condition turns that into: shl(0xf8, 0xff)
+	if (
+		numberEncodingSize(~_value) < numberEncodingSize(_value) &&
+		(lowZeros+highOnes < 256 || highOnes > 16)
+	)
 		// Negated is shorter to represent
 		return findRepresentation(~_value) + AssemblyItems{Instruction::NOT};
 	else
