@@ -141,13 +141,17 @@ public:
 protected:
 	/// Tries to recursively find a way to compute @a _value.
 	AssemblyItems findRepresentation(u256 const& _value);
+	AssemblyItems tryNegation(u256 const& _value, AssemblyItems const& _bestSoFar);
+	AssemblyItems tryNotZeroShift(u256 const& _value, AssemblyItems const& _bestSoFar);
+	AssemblyItems tryLeftShift(u256 const& _value, AssemblyItems const& _bestSoFar);
+	AssemblyItems tryAorB(u256 const& _value, AssemblyItems const& _bestSoFar);
+	AssemblyItems trySub(u256 const& _value, AssemblyItems const& _bestSoFar);
 	/// Recomputes the value from the calculated representation and checks for correctness.
 	bool checkRepresentation(u256 const& _value, AssemblyItems const& _routine) const;
 	bigint gasNeeded(AssemblyItems const& _routine) const;
 
-	/// Counter for the complexity of optimization, will stop when it reaches zero.
-	size_t m_maxSteps = 10000;
 	AssemblyItems m_routine;
+	unsigned m_recursionDepth = 0;
 };
 
 }
